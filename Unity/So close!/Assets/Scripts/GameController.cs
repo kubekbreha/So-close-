@@ -9,16 +9,16 @@ public class GameController : MonoBehaviour {
     public GameObject playerPrefab;
 
     GameObject player;
-    int speed = 20;
+    int speed = 50;
 
 
     // Size of the map in terms of number of hex tiles
     // This is NOT representative of the amount of 
     // world space that we're going to take up.
     // (i.e. our tiles might be more or less than 1 Unity World Unit)
-    int width = 20;
-    int height = 20;
-    Vector3[,] tilesPossitions = new Vector3[20, 20];
+    int width = 10;
+    int height = 10;
+    Vector3[,] tilesPossitions = new Vector3[10, 10];
     int actualTileX;
     int actualTileY;
 
@@ -62,8 +62,8 @@ public class GameController : MonoBehaviour {
             }
         }
 
-        actualTileX = 10;
-        actualTileY = 10;
+        actualTileX = 5;
+        actualTileY = 5;
         player = (GameObject)Instantiate(playerPrefab, tilesPossitions[actualTileX, actualTileY], Quaternion.identity);
        
     }
@@ -98,29 +98,68 @@ public class GameController : MonoBehaviour {
 	}
 
     private void movePlayer(String direction){
-        float step = speed * Time.deltaTime;
-        Vector3 possition;
         switch (direction)
         {
             case "E":
-                possition = new Vector3(player.transform.position.x + (1* xOffset), 0.3F, player.transform.position.z + (1 * zOffset));
-                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
+                actualTileX++;
+                actualTileY++;
+                if (actualTileX > width)
+                {
+                    actualTileX = 20;
+                }
+                if (actualTileY > height)
+                {
+                    actualTileY = 20;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position =  tilesPossitions[actualTileX, actualTileY];
                 break;
-          
+
             case "R":
-                possition = new Vector3(player.transform.position.x + (1* xOffset), 0.3F, player.transform.position.z - (1 * zOffset));
-                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
+                actualTileX--;
+                actualTileY++;
+                if (actualTileX < 0)
+                {
+                    actualTileX = 0;
+                }
+                if (actualTileY > height)
+                {
+                    actualTileY = 20;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
                 break;
 
             case "F":
-                possition = new Vector3(player.transform.position.x - (1* xOffset), 0.3F, player.transform.position.z + (1 * zOffset));
-                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
+                actualTileX++;
+                actualTileY--;
+                if (actualTileX > width)
+                {
+                    actualTileX = 20;
+                }
+                if (actualTileY < height)
+                {
+                    actualTileY = 0;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
                 break;
 
             case "C":
-                possition = new Vector3(player.transform.position.x - (1* xOffset), 0.3F, player.transform.position.z - (1 * zOffset));
-                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
+                actualTileX--;
+                actualTileY--;
+                if (actualTileX < 0)
+                {
+                    actualTileX = 0;
+                }
+                if (actualTileY < 0)
+                {
+                    actualTileY = 0;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
                 break;
+
 
             case "X":
                 //actualTileX++;
