@@ -99,66 +99,27 @@ public class GameController : MonoBehaviour {
 
     private void movePlayer(String direction){
         float step = speed * Time.deltaTime;
-
+        Vector3 possition;
         switch (direction)
         {
             case "E":
-                actualTileX++;
-                actualTileY++;
-                if(actualTileX > width){
-                    actualTileX = 20; 
-                }
-                if (actualTileY > height)
-                {
-                    actualTileY = 20;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                transform.position = Vector3.MoveTowards(transform.position, tilesPossitions[actualTileX, actualTileY], step);
+                possition = new Vector3(player.transform.position.x + (1* xOffset), 0.3F, player.transform.position.z + (1 * zOffset));
+                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
                 break;
           
             case "R":
-                actualTileX--;
-                actualTileY++;
-                if (actualTileX < 0)
-                {
-                    actualTileX = 0;
-                }
-                if (actualTileY > height)
-                {
-                    actualTileY = 20;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                transform.position = Vector3.MoveTowards(transform.position, tilesPossitions[actualTileX, actualTileY], step);
+                possition = new Vector3(player.transform.position.x + (1* xOffset), 0.3F, player.transform.position.z - (1 * zOffset));
+                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
                 break;
 
             case "F":
-                actualTileX++;
-                actualTileY--;
-                if (actualTileX > width)
-                {
-                    actualTileX = 20;
-                }
-                if (actualTileY < height)
-                {
-                    actualTileY = 0;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                transform.position = Vector3.MoveTowards(transform.position, tilesPossitions[actualTileX, actualTileY], step);
+                possition = new Vector3(player.transform.position.x - (1* xOffset), 0.3F, player.transform.position.z + (1 * zOffset));
+                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
                 break;
 
             case "C":
-                actualTileX--;
-                actualTileY--;
-                if (actualTileX < 0)
-                {
-                    actualTileX = 0;
-                }
-                if (actualTileY < 0)
-                {
-                    actualTileY = 0;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                transform.position = Vector3.MoveTowards(transform.position, tilesPossitions[actualTileX, actualTileY], step);
+                possition = new Vector3(player.transform.position.x - (1* xOffset), 0.3F, player.transform.position.z - (1 * zOffset));
+                player.transform.position = Vector3.MoveTowards(player.transform.position, possition, step);
                 break;
 
             case "X":
