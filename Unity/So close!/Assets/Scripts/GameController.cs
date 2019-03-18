@@ -103,13 +103,13 @@ public class GameController : MonoBehaviour {
             case "E":
                 actualTileX++;
                 actualTileY++;
-                if (actualTileX > width)
+                if (actualTileX >= width)
                 {
-                    actualTileX = 20;
+                    actualTileX = 9;
                 }
-                if (actualTileY > height)
+                if (actualTileY >= height)
                 {
-                    actualTileY = 20;
+                    actualTileY = 9;
                 }
                 Debug.Log(tilesPossitions[actualTileX, actualTileY]);
                 player.transform.position =  tilesPossitions[actualTileX, actualTileY];
@@ -122,9 +122,9 @@ public class GameController : MonoBehaviour {
                 {
                     actualTileX = 0;
                 }
-                if (actualTileY > height)
+                if (actualTileY >= height)
                 {
-                    actualTileY = 20;
+                    actualTileY = 9;
                 }
                 Debug.Log(tilesPossitions[actualTileX, actualTileY]);
                 player.transform.position = tilesPossitions[actualTileX, actualTileY];
@@ -133,15 +133,19 @@ public class GameController : MonoBehaviour {
             case "F":
                 actualTileX++;
                 actualTileY--;
-                if (actualTileX > width)
+                if (actualTileX >= width)
                 {
-                    actualTileX = 20;
+                    actualTileX = 9;
                 }
                 if (actualTileY < height)
                 {
                     actualTileY = 0;
                 }
+
+                Debug.Log(actualTileX);
+                Debug.Log(actualTileY);
                 Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+
                 player.transform.position = tilesPossitions[actualTileX, actualTileY];
                 break;
 
