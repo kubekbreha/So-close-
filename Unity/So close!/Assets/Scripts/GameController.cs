@@ -6,11 +6,9 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
     
     public GameObject hexPrefab;
-    public GameObject playerPrefab;
+    public GameObject player;
 
-    GameObject player;
     int speed = 50;
-
 
     // Size of the map in terms of number of hex tiles
     // This is NOT representative of the amount of 
@@ -62,10 +60,8 @@ public class GameController : MonoBehaviour {
             }
         }
 
-        actualTileX = 5;
-        actualTileY = 5;
-        player = (GameObject)Instantiate(playerPrefab, tilesPossitions[actualTileX, actualTileY], Quaternion.identity);
-       
+        actualTileX = 0;
+        actualTileY = 0;
     }
 	
 	// Update is called once per frame
