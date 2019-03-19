@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using uPLibrary.Networking.M2Mqtt;
+//using uPLibrary.Networking.M2Mqtt.Messages;
 
 public class GameController : MonoBehaviour {
-    
+
     public GameObject hexPrefab;
     public GameObject hexWaterPrefab;
     public GameObject player;
@@ -52,6 +54,7 @@ public class GameController : MonoBehaviour {
 
     float xOffset = 0.882f;
     float zOffset = 0.764f;
+
 
     // Use this for initialization
     protected void Start()
