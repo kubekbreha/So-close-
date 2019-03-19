@@ -212,6 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexPrefab: {fileID: 100000, guid: ec55075d188c17f409c030e2fa6d4ebf, type: 3}
+  hexWaterPrefab: {fileID: 100000, guid: 71cd1ad80b827b441897f13882a924f9, type: 3}
   player: {fileID: 66176480}
 --- !u!4 &436275725
 Transform:
@@ -260,7 +261,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
