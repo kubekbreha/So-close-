@@ -147,7 +147,7 @@ public class GameController : MonoBehaviour {
             {                                                                      // otherwise it rotates wrong direction 
                 homeRot = Vector3.zero;
             }
-            player.transform.localEulerAngles = Vector3.Slerp(curRot, homeRot, Time.deltaTime * 2);
+            //player.transform.localEulerAngles = Vector3.Slerp(curRot, homeRot, Time.deltaTime * 2);
         }
         else
         {
