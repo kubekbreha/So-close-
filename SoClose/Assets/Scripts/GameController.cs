@@ -1,266 +1,221 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using uPLibrary.Networking.M2Mqtt;
-using uPLibrary.Networking.M2Mqtt.Messages;
 using UnityEngine;
-using UnityEngine.Networking;
+//using uPLibrary.Networking.M2Mqtt;
+//using uPLibrary.Networking.M2Mqtt.Messages;
 
-//TODO: oddelit uplne UI - nech ostane len GameController a Controller - bude mat aj podporu Score
-//Mozno mat nejaky delegat na instantiate player - zavolam ho a vrati mi naspat GameObject
-//Snad tiez udalosti PlayerConnected a PlayerDisconnected - na to by a tiez mohol viazat ScoreBoard
-//TODO: podpora sprav v json formate
-public class GameController : MonoBehaviour
-{
-    private const long DisconnectTimeout = 6 * 1000 * 10000;
+public class GameController : MonoBehaviour {
 
-    private const long MaxPlayers = 6;
+    public float speed;
+    public FixedJoystick fixedJoystick;
 
-    //Implemented as singleton
-    public static GameController Instance { get; private set; }
+    public GameObject hexPrefab;
+    public GameObject hexWaterPrefab;
+    public GameObject player;
 
-    [SerializeField] private string brokerHost;
+    //int[,] board = new int[,] { 
+    //    {  9, -2, -1, 0, 1, 2, 9 }, 
+    //    {  9, -2, -1, 0, 1, 2, 9 }, 
+    //    { -3, -2, -1, 0, 1, 2, 9}, 
+    //    { -3, -2, -1, 0, 1, 2, 3 }, 
+    //    {  9, -3, -2, -1, 0, 1, 2}, 
+    //    {  9, -2, -1, 0, 1, 2, 9}, 
+    //    { 9, 9, -2, -1, 0, 1, 9} 
+    //};
 
-    [SerializeField] private int brokerPort;
+    int[,] board = new int[,] {
+        {  0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+        {  0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+        {  0,0,0,0,0,1,1,1,0,0,0,0,0,0 },
+        {  0,0,0,0,1,1,1,1,1,1,0,0,0,0 },
+        {  0,0,0,1,1,1,1,1,1,1,1,0,0,0 },
+        {  0,0,1,1,1,1,1,1,1,1,1,1,0,0 },
+        {  0,0,1,1,1,1,1,1,1,1,1,1,0,0 },
+        {  0,0,1,1,1,1,1,1,1,1,1,1,0,0 },
+        {  0,0,1,1,1,1,1,1,1,1,1,1,0,0 },
+        {  0,0,0,1,1,1,1,1,1,1,1,0,0,0 },
+        {  0,0,0,0,1,1,1,1,1,1,0,0,0,0 },
+        {  0,0,0,0,0,0,1,1,1,0,0,0,0,0 },
+        {  0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+        {  0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 
-    [SerializeField] private string topicPrefix;
+    };
 
-    [SerializeField] private string scoreUrl;
 
-    [SerializeField] private GameObject[] playersPrefabs;
+    // Size of the map in terms of number of hex tiles
+    // This is NOT representative of the amount of 
+    // world space that we're going to take up.
+    // (i.e. our tiles might be more or less than 1 Unity World Unit)
+    int width = 14;
+    int height = 14;
+    Vector3[,] tilesPossitions = new Vector3[14, 14];
+    int actualTileX;
+    int actualTileY;
 
-    public string GameId { get; }
+    float xOffset = 0.882f;
+    float zOffset = 0.764f;
 
-    public event Action<Controller> PlayerAdded;
 
-    public event Action<Controller> PlayerRemoved;
-
-    public event Action<Controller> ScoreUpdated;
-
-    private Queue<int> availablePrefabsIndeces;
-
-    private MqttClient client;
-
-    private IDictionary<string, Controller> controllers = new Dictionary<string, Controller>();
-
-    public GameController()
+    // Use this for initialization
+    protected void Start()
     {
-        GameId = GenerateGameId();
-    }
 
-    private string GenerateGameId()
-    {
-        var id = "123";
-        id = DateTime.Now.Ticks.ToString();
-        id = id.Substring(id.Length - 4, 4);
-        return id;
-    }
-
-    void Awake()
-    {
-        if (Instance == null)
+        for (int x = 0; x < width; x++)
         {
-            Instance = this;
-            availablePrefabsIndeces = new Queue<int>(Enumerable.Range(0, playersPrefabs.Length));
-            Connect();
-        }
-        else if (Instance != this)
-            Destroy(gameObject);
-    }
-
-    void Update()
-    {
-        InstantiateConnectedPlayers();
-        RemoveNotConnectedPlayers();
-    }
-
-    private void InstantiateConnectedPlayers()
-    {
-        foreach (var pair in controllers)
-            if (pair.Value.GameObject == null)
-                InstantiatePlayerGameObject(pair.Value);
-    }
-
-    private void RemoveNotConnectedPlayers()
-    {
-        var time = DateTime.Now.Ticks;
-        var toRemove = controllers.Where(pair => time - pair.Value.LastChange > DisconnectTimeout)
-            .Select(pair => pair.Key).ToList();
-        foreach (var key in toRemove)
-            RemovePlayer(controllers[key]);
-    }
-
-    private void InstantiatePlayerGameObject(Controller controller)
-    {
-        var index = availablePrefabsIndeces.Count > 0 ? availablePrefabsIndeces.Dequeue() : 0;
-        var player = (GameObject) Instantiate(playersPrefabs[index], transform.position, transform.rotation);
-        player.GetComponent<Player>().Id = controller.PlayerId;
-        player.GetComponent<Player>().SpawnPlayer();
-        controller.GameObject = player;
-        controller.PrefabIndex = index;
-        PlayerAdded?.Invoke(controller);
-        StartCoroutine(GetScoreFromWeb(controller));
-    }
-
-    private void Connect()
-    {
-        client = new MqttClient(brokerHost, brokerPort, false, null, null, MqttSslProtocols.None);
-        client.MqttMsgPublishReceived += OnMQTTMessageReceived;
-        var clientId = DateTime.Now.Ticks.ToString();
-        client.Connect(clientId);
-        var topic = GetTopicName();
-
-        client.Subscribe(new string[]
-        {
-            topic
-        }, new byte[]
-        {
-            MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE
-        });
-    }
-
-    private string GetTopicName() => topicPrefix + "/" + GameId + "/#";
-
-    //private void SendMQTTMessage(string message)
-    //{
-    //    var bytes = Encoding.ASCII.GetBytes(message);
-    //    client.Publish(GetTopicName(), bytes);
-    //}
-
-    void OnMQTTMessageReceived(object sender, MqttMsgPublishEventArgs e)
-    {
-        var playerId = ExtractPlayerId(e.Topic);
-        var message = Encoding.Default.GetString(e.Message);
-
-        //new message - create player
-        if (message == "new")
-            AddPlayer(playerId, "Guest");
-        else //handle other messages
-        {
-            Controller controller;
-            if (!controllers.TryGetValue(playerId, out controller))
+            for (int y = 0; y < height; y++)
             {
-                controller = AddPlayer(playerId, "Guest");
-                //max numbers of players reached
-                if (controller == null)
-                    return;
+
+                float xPos = x * xOffset;
+
+                // Are we on an odd row?
+                if (y % 2 == 1)
+                {
+                    xPos += xOffset / 2f;
+                }
+
+                if (board[x, y] == 0)
+                {
+                    Vector3 possition = new Vector3(xPos, 0, y * zOffset);
+                    GameObject hex_go = (GameObject)Instantiate(hexWaterPrefab, possition, Quaternion.identity);
+
+                    Vector3 possition2 = new Vector3(xPos, 0.3F, y * zOffset);
+
+                    tilesPossitions[x, y] = possition2;
+
+                    // Name the gameobject something sensible.
+                    hex_go.name = "Wat_" + x + "_" + y;
+
+                    // For a cleaner hierachy, parent this hex to the map
+                    hex_go.transform.SetParent(this.transform);
+                    //hex_go.transform.Rotate(90, 0, 0);
+
+                    //maybe need to change
+                    hex_go.isStatic = true;
+                }else{
+                    Vector3 possition = new Vector3(xPos, 0, y * zOffset);
+                    GameObject hex_go = (GameObject)Instantiate(hexPrefab, possition, Quaternion.identity);
+
+                    Vector3 possition2 = new Vector3(xPos, 0.3F, y * zOffset);
+
+                    tilesPossitions[x, y] = possition2;
+
+                    // Name the gameobject something sensible.
+                    hex_go.name = "Hex_" + x + "_" + y;
+
+                    // For a cleaner hierachy, parent this hex to the map
+                    hex_go.transform.SetParent(this.transform);
+                    //hex_go.transform.Rotate(90, 0, 0);
+
+                    //maybe need to change
+                    hex_go.isStatic = true;
+                }
             }
-
-            //process message content
-            if (message.StartsWith("name"))
-            {
-                var playerName = message.Substring(message.LastIndexOf(':') + 1);
-                controller.PlayerName = playerName;
-            }
-            else if (message.StartsWith("move"))
-            {
-                message = message.Substring(message.LastIndexOf(':') + 1);
-                var parts = message.Split(',');
-                controller.DirectionVector = new Vector3(
-                    float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture),
-                    float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture),
-                    float.Parse(parts[2].Trim(), CultureInfo.InvariantCulture));
-            }
-            else if (message == "fire")
-            {
-                controller.Fire++;
-            }
-
-            //set last time of change
-            controller.Alive();
-        }
-    }
-
-    private Controller AddPlayer(string playerId, String playerName)
-    {
-        Controller controller;
-
-        if (controllers.TryGetValue(playerId, out controller))
-            return controller;
-
-        if (controllers.Count < MaxPlayers)
-        {
-            controller = new Controller(playerId, playerName);
-            controllers.Add(playerId, controller);
-
-            return controller;
         }
 
-        return null;
+        actualTileX = 9;
+        actualTileY = 5;
+        player.transform.position = tilesPossitions[actualTileX, actualTileY];
+
     }
 
-    private void RemovePlayer(Controller controller)
+    public void FixedUpdate()
     {
-        availablePrefabsIndeces.Enqueue(controller.PrefabIndex);
-        Destroy(controller.GameObject);
-        controllers.Remove(controller.PlayerId);
-        PlayerRemoved?.Invoke(controller);
-        StartCoroutine(PutScoreToWeb(controller));
+        Vector3 direction = Vector3.forward * fixedJoystick.Vertical + Vector3.right * fixedJoystick.Horizontal;
+        player.transform.position = direction;
+
+        //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
-
-    private string ExtractPlayerId(string topic) => topic.Substring(topic.LastIndexOf('/') + 1);
-
-    public Controller GetController(string id)
-    {
-        Controller controller;
-        return controllers.TryGetValue(id, out controller) ? controller : null;
-    }
-
-    //Update score of the player
-    public void UpdateScore(string playerId, int value)
-    {
-        var controller = GetController(playerId);
-        controller.Score += value;
-        ScoreUpdated?.Invoke(controller);
-    }
-
-    public ICollection<Controller> GetControllers() => controllers.Values;
-
-    void OnApplicationQuit() => client.Disconnect();
-
-    private IEnumerator PutScoreToWeb(Controller controller)
-    {
-        using (UnityWebRequest www = UnityWebRequest.Put(scoreUrl + "/" + controller.PlayerName,
-            controller.Score.ToString()))
+	
+	// Update is called once per frame
+	void Update () {
+        //move around D button which is center
+        if (Input.GetButtonDown("E"))
         {
-            www.SetRequestHeader("Content-Type", "text/plain");
-
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-                Debug.Log("http error " + www.responseCode);
-            }
-            else
-            {
-                //Debug.Log("Upload complete!");
-            }
+            this.movePlayer("E");
         }
-    }
-
-    private IEnumerator GetScoreFromWeb(Controller controller)
-    {
-        using (UnityWebRequest www =
-            UnityWebRequest.Get(scoreUrl + "/" + controller.PlayerName))
+        if (Input.GetButtonDown("R"))
         {
-            yield return www.SendWebRequest();
+            this.movePlayer("R");
+        }
+        if (Input.GetButtonDown("F"))
+        {
+            this.movePlayer("F");
+        }
+        if (Input.GetButtonDown("C"))
+        {
+            this.movePlayer("C");
+        }
+      
+	}
 
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-                Debug.Log("http error " + www.responseCode);
-            }
-            else
-            {
-                var result = Encoding.Default.GetString(www.downloadHandler.data);
-                controller.Score = int.Parse(result);
-                ScoreUpdated?.Invoke(controller);
-                //Debug.Log("Download complete! " + result);
-            }
+    private void movePlayer(String direction){
+        switch (direction)
+        {
+            case "E":
+                actualTileX++;
+                actualTileY++;
+                if (actualTileX >= width)
+                {
+                    actualTileX = 9;
+                }
+                if (actualTileY >= height)
+                {
+                    actualTileY = 9;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
+                break;
+
+            case "R":
+                actualTileX--;
+                actualTileY++;
+                if (actualTileX < 0)
+                {
+                    actualTileX = 0;
+                }
+                if (actualTileY >= height)
+                {
+                    actualTileY = 9;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
+                break;
+
+            case "F":
+                actualTileX++;
+                actualTileY--;
+                if (actualTileX >= width)
+                {
+                    actualTileX = 9;
+                }
+                if (actualTileY < height)
+                {
+                    actualTileY = 0;
+                }
+
+                Debug.Log(actualTileX);
+                Debug.Log(actualTileY);
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
+                break;
+
+            case "C":
+                actualTileX--;
+                actualTileY--;
+                if (actualTileX < 0)
+                {
+                    actualTileX = 0;
+                }
+                if (actualTileY < 0)
+                {
+                    actualTileY = 0;
+                }
+                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
+                player.transform.position = tilesPossitions[actualTileX, actualTileY];
+                break;
+
         }
     }
 }
