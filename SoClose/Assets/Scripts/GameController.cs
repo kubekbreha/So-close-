@@ -6,14 +6,16 @@ using UnityEngine;
 //using uPLibrary.Networking.M2Mqtt.Messages;
 
 public class GameController : MonoBehaviour {
-
+    
     public float speed;
-    public FixedJoystick fixedJoystickLeft;
     public FixedJoystick fixedJoystickRight;
+
+    public Vector3 whereToJump;
 
     public GameObject hexPrefab;
     public GameObject hexWaterPrefab;
     public GameObject player;
+    public GameObject playerColider;
 
     //int[,] board = new int[,] { 
     //    {  9, -2, -1, 0, 1, 2, 9 }, 
@@ -122,19 +124,31 @@ public class GameController : MonoBehaviour {
 
     public void FixedUpdate()
     {
-        Vector3 direction = Vector3.forward * fixedJoystickLeft.Vertical + Vector3.right * fixedJoystickLeft.Horizontal;
-
         Vector3 rotation = Vector3.forward * fixedJoystickRight.Vertical + Vector3.right * fixedJoystickRight.Horizontal;
         Twist(player, fixedJoystickRight.Horizontal, fixedJoystickRight.Vertical);
 
         //float angle = (float)(fixedJoystickRight.Vertical * (180.0 / Math.PI));
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
 
-        InvokeRepeating("JumpTile", 0.0f, 1.5f);
+        InvokeRepeating("JumpTile", 1.5f, 1.5f);
     }
 
     private void JumpTile(){
         Debug.Log("jump tile");
+    }
+
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "TileGround")
+        {
+            Debug.Log("Do something here");
+        }
+
+        if (collision.gameObject.tag == "MyGameObjectTag")
+        {
+            Debug.Log("Do something else here");
+        }
     }
 
 
