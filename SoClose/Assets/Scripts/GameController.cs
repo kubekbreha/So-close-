@@ -125,14 +125,20 @@ public class GameController : MonoBehaviour {
         Vector3 direction = Vector3.forward * fixedJoystickLeft.Vertical + Vector3.right * fixedJoystickLeft.Horizontal;
 
         Vector3 rotation = Vector3.forward * fixedJoystickRight.Vertical + Vector3.right * fixedJoystickRight.Horizontal;
-        Twist(fixedJoystickRight.Horizontal, fixedJoystickRight.Vertical);
+        Twist(player, fixedJoystickRight.Horizontal, fixedJoystickRight.Vertical);
 
         //float angle = (float)(fixedJoystickRight.Vertical * (180.0 / Math.PI));
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
+
+        InvokeRepeating("JumpTile", 0.0f, 1.5f);
+    }
+
+    private void JumpTile(){
+        Debug.Log("jump tile");
     }
 
 
-    private void Twist(float h1, float v1)
+    private void Twist(GameObject gameObject, float h1, float v1)
     {
         if (h1 == 0f && v1 == 0f)
         { // this statement allows it to recenter once the inputs are at zero 
@@ -147,12 +153,12 @@ public class GameController : MonoBehaviour {
             {                                                                      // otherwise it rotates wrong direction 
                 homeRot = Vector3.zero;
             }
-            //player.transform.localEulerAngles = Vector3.Slerp(curRot, homeRot, Time.deltaTime * 2);
+            //gameObject.transform.localEulerAngles = Vector3.Slerp(curRot, homeRot, Time.deltaTime * 2);
         }
         else
         {
-            player.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(h1, v1) * 180 / Mathf.PI, 0f); // this does the actual rotaion according to inputs
-        }
+            gameObject.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(h1, v1) * 180 / Mathf.PI, 0f); // this does the actual rotaion according to inputs
+        }    
     }
 
 	
