@@ -129,11 +129,9 @@ public class GameController : MonoBehaviour {
 
         //float angle = (float)(fixedJoystickRight.Vertical * (180.0 / Math.PI));
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
-
-        InvokeRepeating("JumpTile", 1.5f, 1.5f);
     }
 
-    private void JumpTile(){
+    public void JumpTile(){
         Debug.Log("jump tile");
     }
 
@@ -160,7 +158,6 @@ public class GameController : MonoBehaviour {
             Vector3 homeRot;
             if (curRot.y > 180f)
             { // this section determines the direction it returns home 
-                Debug.Log(curRot.y);
                 homeRot = new Vector3(0f, 359.999f, 0f); //it doesnt return to perfect zero 
             }
             else
@@ -175,96 +172,4 @@ public class GameController : MonoBehaviour {
         }    
     }
 
-	
-	// Update is called once per frame
-	void Update () {
-        //move around D button which is center
-        if (Input.GetButtonDown("E"))
-        {
-            this.movePlayer("E");
-        }
-        if (Input.GetButtonDown("R"))
-        {
-            this.movePlayer("R");
-        }
-        if (Input.GetButtonDown("F"))
-        {
-            this.movePlayer("F");
-        }
-        if (Input.GetButtonDown("C"))
-        {
-            this.movePlayer("C");
-        }
-      
-	}
-
-    private void movePlayer(String direction){
-        switch (direction)
-        {
-            case "E":
-                actualTileX++;
-                actualTileY++;
-                if (actualTileX >= width)
-                {
-                    actualTileX = 9;
-                }
-                if (actualTileY >= height)
-                {
-                    actualTileY = 9;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                player.transform.position = tilesPossitions[actualTileX, actualTileY];
-                break;
-
-            case "R":
-                actualTileX--;
-                actualTileY++;
-                if (actualTileX < 0)
-                {
-                    actualTileX = 0;
-                }
-                if (actualTileY >= height)
-                {
-                    actualTileY = 9;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                player.transform.position = tilesPossitions[actualTileX, actualTileY];
-                break;
-
-            case "F":
-                actualTileX++;
-                actualTileY--;
-                if (actualTileX >= width)
-                {
-                    actualTileX = 9;
-                }
-                if (actualTileY < height)
-                {
-                    actualTileY = 0;
-                }
-
-                Debug.Log(actualTileX);
-                Debug.Log(actualTileY);
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-
-                player.transform.position = tilesPossitions[actualTileX, actualTileY];
-                break;
-
-            case "C":
-                actualTileX--;
-                actualTileY--;
-                if (actualTileX < 0)
-                {
-                    actualTileX = 0;
-                }
-                if (actualTileY < 0)
-                {
-                    actualTileY = 0;
-                }
-                Debug.Log(tilesPossitions[actualTileX, actualTileY]);
-                player.transform.position = tilesPossitions[actualTileX, actualTileY];
-                break;
-
-        }
-    }
 }
