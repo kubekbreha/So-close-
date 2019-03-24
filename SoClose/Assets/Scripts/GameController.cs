@@ -8,7 +8,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
 
     public float speed;
-    public FixedJoystick fixedJoystick;
+    public FixedJoystick fixedJoystickLeft;
+    public FixedJoystick fixedJoystickRight;
 
     public GameObject hexPrefab;
     public GameObject hexWaterPrefab;
@@ -121,8 +122,12 @@ public class GameController : MonoBehaviour {
 
     public void FixedUpdate()
     {
-        Vector3 direction = Vector3.forward * fixedJoystick.Vertical + Vector3.right * fixedJoystick.Horizontal;
+        Vector3 direction = Vector3.forward * fixedJoystickLeft.Vertical + Vector3.right * fixedJoystickLeft.Horizontal;
+        Vector3 rotation = Vector3.forward * fixedJoystickRight.Vertical + Vector3.right * fixedJoystickRight.Horizontal;
+
         player.transform.position = direction;
+
+        player.transform.Rotate(0, rotation.x, 0, Space.World);
 
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
