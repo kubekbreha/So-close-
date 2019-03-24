@@ -123,14 +123,38 @@ public class GameController : MonoBehaviour {
     public void FixedUpdate()
     {
         Vector3 direction = Vector3.forward * fixedJoystickLeft.Vertical + Vector3.right * fixedJoystickLeft.Horizontal;
+
         Vector3 rotation = Vector3.forward * fixedJoystickRight.Vertical + Vector3.right * fixedJoystickRight.Horizontal;
+        Twist(fixedJoystickRight.Horizontal, fixedJoystickRight.Vertical);
 
-        player.transform.position = direction;
-
-        player.transform.Rotate(0, rotation.x, 0, Space.World);
-
+        //float angle = (float)(fixedJoystickRight.Vertical * (180.0 / Math.PI));
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
+
+
+    private void Twist(float h1, float v1)
+    {
+        if (h1 == 0f && v1 == 0f)
+        { // this statement allows it to recenter once the inputs are at zero 
+            Vector3 curRot = player.transform.localEulerAngles; // the object you are rotating
+            Vector3 homeRot;
+            if (curRot.y > 180f)
+            { // this section determines the direction it returns home 
+                Debug.Log(curRot.y);
+                homeRot = new Vector3(0f, 359.999f, 0f); //it doesnt return to perfect zero 
+            }
+            else
+            {                                                                      // otherwise it rotates wrong direction 
+                homeRot = Vector3.zero;
+            }
+            player.transform.localEulerAngles = Vector3.Slerp(curRot, homeRot, Time.deltaTime * 2);
+        }
+        else
+        {
+            player.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(h1, v1) * 180 / Mathf.PI, 0f); // this does the actual rotaion according to inputs
+        }
+    }
+
 	
 	// Update is called once per frame
 	void Update () {
