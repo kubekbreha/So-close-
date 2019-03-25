@@ -131,24 +131,10 @@ public class GameController : MonoBehaviour {
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
 
-    public void JumpTile(){
+    public void JumpTile()
+    {
         Debug.Log("jump tile");
     }
-
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.name == "TileGround")
-        {
-            Debug.Log("Do something here");
-        }
-
-        if (collision.gameObject.tag == "MyGameObjectTag")
-        {
-            Debug.Log("Do something else here");
-        }
-    }
-
 
     private void Twist(GameObject gameObject, float h1, float v1)
     {
