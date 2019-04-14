@@ -8,10 +8,12 @@ public class TileDropper : MonoBehaviour
     private string collidingWith;
     public Rigidbody tileGround;
 
+    public GameObject gameOverCanvas;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameOverCanvas.SetActive(false);
     }
 
     // Update is called once per frame
@@ -32,8 +34,12 @@ public class TileDropper : MonoBehaviour
                 collidingTile.gameObject.GetComponent<MeshRenderer>().enabled = false;        
             }
 
+            //GAMEOVER handeling
             GetComponent<Collider>().attachedRigidbody.useGravity = true;
+
+            gameOverCanvas.SetActive(true);
         }
+
 
         if (colider.gameObject.tag == "TileGround")
         {
