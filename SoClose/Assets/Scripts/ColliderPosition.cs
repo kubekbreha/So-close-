@@ -8,6 +8,10 @@ public class ColliderPosition : MonoBehaviour
 
     public GameObject player;
 
+    private GameObject collidingTile;
+
+    private string collidingWith;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,21 +21,30 @@ public class ColliderPosition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider colider)
     {
-        Debug.Log("Colided");
-
-        if (collision.gameObject.tag == "TileWather")
+        if (colider.gameObject.tag == "TileWather")
         {
-            Debug.Log("Do something else here");
+            collidingTile = colider.gameObject;
+            collidingWith = colider.gameObject.tag;
         }
 
-        if (collision.gameObject.tag == "TileGround")
+        if (colider.gameObject.tag == "TileGround")
         {
-            Debug.Log("Do something else here");
+            collidingTile = colider.gameObject;
+            collidingWith = colider.gameObject.tag;
         }
     }
+
+
+
+    public void JumpTile()
+    {
+        player.transform.position = collidingTile.transform.position + new Vector3(0, 0.3F, 0);
+    }
+
 }
+

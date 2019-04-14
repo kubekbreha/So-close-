@@ -131,10 +131,6 @@ public class GameController : MonoBehaviour {
         //rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
 
-    public void JumpTile()
-    {
-        Debug.Log("jump tile");
-    }
 
     private void Twist(GameObject gameObject, float h1, float v1)
     {
