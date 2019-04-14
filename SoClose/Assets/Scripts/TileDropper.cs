@@ -7,6 +7,7 @@ public class TileDropper : MonoBehaviour
     private Collider collidingTile;
     private string collidingWith;
     public Rigidbody tileGround;
+    public GameObject playerAnimal;
 
     public GameObject gameOverCanvas;
 
@@ -36,6 +37,7 @@ public class TileDropper : MonoBehaviour
 
             //GAMEOVER handeling
             GetComponent<Collider>().attachedRigidbody.useGravity = true;
+            playerAnimal.gameObject.GetComponent<Rigidbody>().useGravity = true;
 
             gameOverCanvas.SetActive(true);
         }
@@ -45,6 +47,7 @@ public class TileDropper : MonoBehaviour
         {
             if(colider.gameObject.GetComponent<MeshRenderer>().enabled == false){
                 GetComponent<Collider>().attachedRigidbody.useGravity = true;
+                playerAnimal.gameObject.GetComponent<Rigidbody>().useGravity = true;
             }
 
             if (collidingTile != null){
