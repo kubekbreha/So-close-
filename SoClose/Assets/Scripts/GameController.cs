@@ -120,6 +120,8 @@ public class GameController : MonoBehaviour {
         actualTileY = 5;
         player.transform.position = tilesPossitions[actualTileX, actualTileY];
 
+        Vector3 elevation = new Vector3(player.transform.position.x, 0.8F, player.transform.position.z);
+        player.transform.position = elevation;
     }
 
     public void FixedUpdate()

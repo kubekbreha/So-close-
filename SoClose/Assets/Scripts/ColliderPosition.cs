@@ -18,9 +18,6 @@ public class ColliderPosition : MonoBehaviour
     private float myLimit = 1.0f;
 
 
-
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +30,6 @@ public class ColliderPosition : MonoBehaviour
     {
 
     }
-
 
     private void FixedUpdate()
     {
@@ -80,6 +76,7 @@ public class ColliderPosition : MonoBehaviour
     {
         if (myCounter >= myLimit) {
             player.transform.position = collidingTile.transform.position + new Vector3(0, 0.3F, 0);
+            player.transform.position = new Vector3(player.transform.position.x, 0.8F, player.transform.position.z);
             myCounter = 0f;
         }
     }
