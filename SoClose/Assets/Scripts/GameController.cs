@@ -15,8 +15,14 @@ public class GameController : MonoBehaviour
 
     public GameObject hexPrefab;
     public GameObject hexWaterPrefab;
+
     public GameObject player;
     public GameObject playerColider;
+
+    public GameObject bot;
+    public GameObject botColider;
+
+
 
     //int[,] board = new int[,] { 
     //    {  9, -2, -1, 0, 1, 2, 9 }, 
@@ -123,8 +129,13 @@ public class GameController : MonoBehaviour
         actualTileY = 5;
         player.transform.position = tilesPossitions[actualTileX, actualTileY];
 
+        bot.transform.position = tilesPossitions[4, 3];
+
         Vector3 elevation = new Vector3(player.transform.position.x, 0.8F, player.transform.position.z);
         player.transform.position = elevation;
+
+        Vector3 elevation2 = new Vector3(bot.transform.position.x, 0.8F, bot.transform.position.z);
+        bot.transform.position = elevation2;
     }
 
     public void FixedUpdate()
