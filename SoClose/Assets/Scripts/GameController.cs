@@ -5,8 +5,9 @@ using UnityEngine;
 //using uPLibrary.Networking.M2Mqtt;
 //using uPLibrary.Networking.M2Mqtt.Messages;
 
-public class GameController : MonoBehaviour {
-    
+public class GameController : MonoBehaviour
+{
+
     public float speed;
     public FixedJoystick fixedJoystickRight;
 
@@ -95,7 +96,9 @@ public class GameController : MonoBehaviour {
 
                     //maybe need to change
                     hex_go.isStatic = true;
-                }else{
+                }
+                else
+                {
                     Vector3 possition = new Vector3(xPos, 0, y * zOffset);
                     GameObject hex_go = (GameObject)Instantiate(hexPrefab, possition, Quaternion.identity);
 
@@ -153,7 +156,7 @@ public class GameController : MonoBehaviour {
         else
         {
             gameObject.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(h1, v1) * 180 / Mathf.PI, 0f); // this does the actual rotaion according to inputs
-        }    
+        }
     }
 
 }

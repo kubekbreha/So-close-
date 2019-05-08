@@ -10,7 +10,22 @@ public class MainMenu : MonoBehaviour
     public GameObject MainPanel;
     public GameObject CharacterPanel;
     public GameObject ControlsPanel;
-    
+
+    public GameObject Button;
+    public GameObject Button1;
+    public GameObject Button2;
+    private int positionPerson = 0;
+
+
+
+    public void Start()
+    {
+        Button.gameObject.SetActive(true);
+        Button1.gameObject.SetActive(false);
+        Button2.gameObject.SetActive(false);
+
+    }
+
     public void openOptions()
     {
         //enable respective panel
@@ -78,4 +93,55 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene(scene);
     }
+
+
+     
+    public void changePersonLeft()   //zmena pozicie dolava postavicky v menu
+    {
+        switch (positionPerson)
+        {
+            case 0:
+                positionPerson = 2;
+                Button.gameObject.SetActive(false);
+                Button2.gameObject.SetActive(true);
+                break;
+            case 1:
+                positionPerson = 0;
+                Button1.gameObject.SetActive(false);
+                Button.gameObject.SetActive(true);
+                break;
+            case 2:
+                positionPerson = 1;
+                Button2.gameObject.SetActive(false);
+                Button1.gameObject.SetActive(true);
+                break;
+        }
+        PlayerPrefs.SetInt("Characters", positionPerson);
+    }
+
+    public void changePersonRight()             //zmena pozicie doprava postavicky v menu
+    {
+    
+        switch (positionPerson)
+        {
+            case 0:
+                positionPerson = 1;
+                Button.gameObject.SetActive(false);
+                Button1.gameObject.SetActive(true);
+                break;
+            case 1:
+                positionPerson = 2;
+                Button1.gameObject.SetActive(false);
+                Button2.gameObject.SetActive(true);
+                break;
+            case 2:
+                positionPerson = 0;
+                Button2.gameObject.SetActive(false);
+                Button.gameObject.SetActive(true);
+                break;
+        }
+
+        PlayerPrefs.SetInt("Characters", positionPerson);
+    }
+
 }
