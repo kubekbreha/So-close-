@@ -1246,6 +1246,9 @@ MonoBehaviour:
   MainPanel: {fileID: 592237069}
   CharacterPanel: {fileID: 0}
   ControlsPanel: {fileID: 1715216381}
+  Button: {fileID: 1170987959}
+  Button1: {fileID: 803150455}
+  Button2: {fileID: 254568773}
 --- !u!95 &592237072
 Animator:
   serializedVersion: 3
@@ -1768,7 +1771,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1197825992}
-          m_MethodName: playHoverClip
+          m_MethodName: openOptions
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2262,6 +2265,9 @@ MonoBehaviour:
   MainPanel: {fileID: 592237069}
   CharacterPanel: {fileID: 0}
   ControlsPanel: {fileID: 1715216381}
+  Button: {fileID: 1170987959}
+  Button1: {fileID: 803150455}
+  Button2: {fileID: 254568773}
 --- !u!95 &1197825993
 Animator:
   serializedVersion: 3

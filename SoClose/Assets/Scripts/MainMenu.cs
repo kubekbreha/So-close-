@@ -21,8 +21,8 @@ public class MainMenu : MonoBehaviour
     public void Start()
     {
         Button.gameObject.SetActive(true);
-        Button1.gameObject.SetActive(false);
-        Button2.gameObject.SetActive(false);
+        Button1.gameObject.SetActive(true);
+        Button2.gameObject.SetActive(true);
 
     }
 
@@ -48,7 +48,6 @@ public class MainMenu : MonoBehaviour
 
 
     #region Back Buttons
-
     public void back()
     {
         ControlsPanel.SetActive(false);
