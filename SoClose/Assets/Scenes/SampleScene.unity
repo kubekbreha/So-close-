@@ -268,12 +268,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 89247304}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff4a23fe0655c4edd9e9ecf054c16781, type: 3}
+  m_Script: {fileID: 11500000, guid: 808ad1d8f6a444afbaa59a74ad77b4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tileGround: {fileID: 6227302676277113093, guid: 21503f9a9cc3b43ccb6018136274e878,
     type: 3}
-  playerAnimal: {fileID: 100000, guid: 6dc2ea8cf99278840ae64d502e6bd57a, type: 3}
+  playerAnimal: {fileID: 1677886190}
   gameOverCanvas: {fileID: 1422861623}
 --- !u!1001 &222513733
 PrefabInstance:
@@ -285,6 +285,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 133023fadbb0e234f84341093a5dbc49, type: 3}
       propertyPath: m_Name
       value: mod_prop_animal_dog
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 133023fadbb0e234f84341093a5dbc49, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 133023fadbb0e234f84341093a5dbc49, type: 3}
       propertyPath: m_LocalPosition.x
@@ -703,11 +707,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 833796067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af3605de092c24649b8df49116cc2249, type: 3}
+  m_Script: {fileID: 11500000, guid: 2267ea2805a5c4bdc9f3f76326a9fad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1676977825}
-  jumpButton: {fileID: 1718935207}
+  target: {fileID: 1263038288}
 --- !u!1 &983305769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,6 +1021,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1563058249}
     m_Modifications:
+    - target: {fileID: 1185860308826598, guid: bffe31d377cf64ce4991eb8338a7236f, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 4805323237741492, guid: bffe31d377cf64ce4991eb8338a7236f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1283,7 +1291,7 @@ GameObject:
   - component: {fileID: 1563058249}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
